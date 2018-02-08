@@ -14,6 +14,12 @@ To unit test the Redux middleware:
 
     npx mocha tests/redux-tests.js
 
+To debug unit tests, set a `debugger;` break point in the file and then run:
+
+    npx mocha test/redux-tests.js --inspect-brk
+
+Then navigate to `chrome://inspect/`.
+
 ## Notes
 
 * **Actions** are payloads of information that get sent to the store. The only way to modify the information contained 
@@ -29,3 +35,33 @@ in the store is to emit an action to it.
 * Return the previous state for any unknown action. Otherwise your app could crash.
 * The **Store** is what holds all of the application state in Redux. There is always just one store per app.
 * Use `createStore()` on the meta-reducer (the combined reducer) to initialize the store.
+* React differentiates between presentational components and container components.
+* In the React-Redux design pattern, containers basically exist solely to handle the link to the Redux data store.
+* The React to Redux connection is made with the `connect` function. To use `connect`, define a special `mapStateToProps` function. `mapStateToProps` should explain how to transform the current state into props that will be passed to the wrapped presentational component.
+* To read actions that are dispatched from the front end and do something about them (e.g. `onMouseOver`) define a `mapDispatchToProps` method, which takes a dispatch as input and returns new properties to be passed down to presentational components as output.
+* To connect containers to the store, use the `connect` method from `react-redux`. This goes something like:
+
+```javascript
+const VisibleTodoList = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TodoList)
+
+export default VisibleTodoList
+```
+
+* So much for the reading notes, now on to what I've found...
+* There are a lot of individual files floating around when working with React+Redux, which, when combined with the boilerplate, makes trivial projects mighty confusing.
+* To set an event dispatch set e.g. `onMouseOver={this.props.onMouseOver}` in the presentational component, and then also something like:
+
+```javascript
+const mapDispatchToProps = (dispatch, ownProps) => {
+    return {
+        onMouseOver: () => {
+            dispatch(setStartPin(42, 42));
+        }
+    }
+};
+```
+
+...in the container.

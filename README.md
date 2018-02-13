@@ -65,3 +65,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 ```
 
 ...in the container.
+
+* Reducers are globbed by the name of the sub-reducer as the top-level state key. E.g. if we have `reducer1` and `reducer2` the overall state will be `{reducer1: {}, reducer2: {}}`, with responsible fields in the contained objects.
+  
+  I found this confusing particularly because this is not true when *inside* the reducer. E.g. inside `reduce_stuff.js` there will be a `foo` prop, but inside of the linked-to container there will be a `reduce_stuff.foo` prop.
+* The `ownProps` input in `mapStateToProps` and `mapDispatchToProps` is properties specified for the container as it is specified in the root JSX file. E.g. `<MyContainer foo={"bar"}/>` will have `{foo: bar}` for `ownProps`. It is *not* the properties passed to the underlying component!
+* `mapDispatchToProps` has no access to the component props. This makes it impossible to interpret dispatch events at the container level. The container needs to just dispatch an action to the store and have the store handle interpreting it!
+
+  So e.g. it's going to be a `send_coordinates` action, not a `send_starting_coordinate`, `send_ending_coordinate` action.

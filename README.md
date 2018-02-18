@@ -73,3 +73,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 * `mapDispatchToProps` has no access to the component props. This makes it impossible to interpret dispatch events at the container level. The container needs to just dispatch an action to the store and have the store handle interpreting it!
 
   So e.g. it's going to be a `send_coordinates` action, not a `send_starting_coordinate`, `send_ending_coordinate` action.
+* Dispatch logic must be synchronous. State changes due to events which require synchronous logic must express the synchronous elements of the logic in the *action*, which can then dispatch to the store (and trigger a reducer) whenever it's done. The design pattern to this (a "thunk") is explained best [here](https://medium.com/@jtbennett/asynchronous-actions-in-redux-8412cf92a26f).
